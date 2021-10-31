@@ -1,4 +1,4 @@
-const env = "testnet";
+const env = "test";
 const chainId = 9000;//test net
 const price = 0;
 let address;
@@ -637,9 +637,15 @@ window.onload = () => {
     provider = new ethers.providers.Web3Provider(window.ethereum);
     const accounts = await provider.send("eth_requestAccounts");
     document.getElementById("button").innerHTML = accounts[0];
+    getAvailability()
+
   };
 
-
+const getAvailability=async()=>{
+  const contract = new ethers.Contract(contractAddress, abi,provider);
+  let minted = await contract.totalSupply();
+  document.getElementById("availability").innerHTML = `Minted: ${minted}/10000`;
+}
 
   const failedConnectWallet = () => {
     document.getElementById("button").innerHTML = "Error Network, switch to Evmos";
@@ -659,7 +665,7 @@ window.onload = () => {
                 symbol: "PHOTON",
                 decimals: 18,
               },
-              rpcUrls: ["http://arsiamons.rpc.evmos.org:8545"],
+              rpcUrls: ["http://arsiamons.rpc.evmos.org:8545/"],
               blockExplorerUrls: ["https://evm.evmos.org"],
             },
           ],
@@ -700,7 +706,6 @@ window.onload = () => {
   document.getElementById("button").addEventListener("click", switchNetwork);
 
   connectWallet();
-
 
 
   const handleMint = async () => {
@@ -790,7 +795,7 @@ window.onload = () => {
           icon: "success",
         });
         document.getElementById("mint").innerHTML = "Mint";
-        // window.open(`${etherscanUrl}/${result.transactionHash}`);
+        getAvailability();
       } catch (e) {}
     }
   };
